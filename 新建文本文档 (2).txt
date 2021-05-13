@@ -1,0 +1,33 @@
+public boolean installChannel(String channelName) throws IOException, InvalidArgumentException, TransactionException, ProposalException {
+			// TODO Auto-generated method stub
+			  String configPath = this.config.getConfigPath();
+                         //初始化 ChannelConfiguration 对象.参数是通道初始化文件路径
+			  ChannelConfiguration channelConfiguration = new ChannelConfiguration(new File(configPath + "/"+channelName + ".tx"));
+			  //构造orderder节点信息
+			    String ordererName = orderers.get().get(0).getOrdererName();
+				Properties ordererProperties = loadOrderProperty(ordererName);
+				Orderer anOrderer = client.newOrderer(
+						ordererName,
+						 orderers.get().get(0).getOrdererLocation(), ordererProperties);
+				
+		        //Create channel that has only one signer that is this orgs peer admin. If channel creation policy needed more signature they would need to be added too.
+		        Channel channel = client.newChannel(channelName, anOrderer, channelConfiguration, client.getChannelConfigurationSignature(channelConfiguration, fabricOrg.getPeerAdmin()));
+                       //构造peer节点信息，并且将peer节点加入到通道中。peer节点加入通道后，才能通过该peer节点中访问通道中的智能合约
+		        for (com.ygsoft.fabric.bean.Peers.Peer p : config.getInstallPeers().get()) {
+					Properties peerProperties = this.loadPeerProperties(p.getPeerName());
+					Peer peer = client.newPeer(p.getPeerName(),p.getPeerLocation(),peerProperties);
+					channel.joinPeer(peer);
+				
+				}
+				for (int i = 0; i < orderers.get().size(); i++) {
+					Properties ordererProperties2 = loadOrderProperty(ordererName);
+					channel.addOrderer(client.newOrderer(
+							orderers.get().get(i).getOrdererName(),
+							orderers.get().get(i)
+									.getOrdererLocation(), ordererProperties2));
+				}
+				log.debug("channel.isInitialized() = " + channel.isInitialized());
+			   channel.initialize();
+		
+			  return true;
+		}
