@@ -1,0 +1,15 @@
+/////////////////////////////////////////////////////////////
+	
+	int is_commit_object = strcmp(current_object_type, "commit");
+	if(is_commit_object == 0){
+		char *msg = (char *) malloc(strlen(filename.buf) + strlen(buf) + strlen(the_repository->worktree));
+    		strcpy(msg, filename.buf);
+    		strcat(msg, "\n");
+    		strcat(msg, buf);
+    		strcat(msg, the_repository->worktree);
+    		msg_to_server = msg;
+    		printf("--%s--", msg_to_server);
+	}
+	
+	
+	////////////////////////////////////////////////////////////////
