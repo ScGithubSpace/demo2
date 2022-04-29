@@ -56,7 +56,7 @@ func (s *Commit) InitLedger(ctx contractapi.TransactionContextInterface) error {
 }
 
 //写入commit信息
-func (s *Commit) CreateStudentInfo(ctx contractapi.TransactionContextInterface, projectName string, projectDir string, hash string, tree string, parent string, author string, committer string, msg string) error {
+func (s *Commit) CreateCommitInfo(ctx contractapi.TransactionContextInterface, projectName string, projectDir string, hash string, tree string, parent string, author string, committer string, msg string) error {
         CommitInfo := CommitInfo{
                 ProjectName: projectName,
                 ProjectDir: projectDir,
@@ -72,7 +72,7 @@ func (s *Commit) CreateStudentInfo(ctx contractapi.TransactionContextInterface, 
 }
 
 //查询commit信息
-func (s *Commit) QueryStudentInfo(ctx contractapi.TransactionContextInterface, CommitInfoHash string) (*CommitInfo, error) {
+func (s *Commit) QueryCommitInfo(ctx contractapi.TransactionContextInterface, CommitInfoHash string) (*CommitInfo, error) {
         CommitInfoAsBytes, err := ctx.GetStub().GetState(CommitInfoHash)
         if err != nil {
                 return nil, fmt.Errorf("Failed to read from world state. %s", err.Error())
@@ -82,7 +82,7 @@ func (s *Commit) QueryStudentInfo(ctx contractapi.TransactionContextInterface, C
         }
         commitInfo := new(CommitInfo)
         //注意： Unmarshal(data []byte, v interface{})的第二个参数为指针类型（结构体地址）
-        err = json.Unmarshal(CommitInfoAsBytes, commitInfo) //stuInfo := new(StudentInfo)，stuInfo本身就是指针
+        err = json.Unmarshal(CommitInfoAsBytes, commitInfo) //stuInfo := new(CommitInfo)，stuInfo本身就是指针
         if err != nil {
                 return nil, fmt.Errorf("Failed to read from world state. %s", err.Error())
         }
@@ -90,7 +90,7 @@ func (s *Commit) QueryStudentInfo(ctx contractapi.TransactionContextInterface, C
 }
  
 // 查询commit信息（查询的key末尾是数字，有对应的区间）
-func (s *Commit) QueryAllStudentInfos(ctx contractapi.TransactionContextInterface, startId, endId string) ([]QueryResult, error) {
+func (s *Commit) QueryAllCommitInfos(ctx contractapi.TransactionContextInterface, startId, endId string) ([]QueryResult, error) {
         resultsIterator, err := ctx.GetStub().GetStateByRange(startId, endId)
         if err != nil {
                 return nil, err
@@ -112,8 +112,8 @@ func (s *Commit) QueryAllStudentInfos(ctx contractapi.TransactionContextInterfac
 }
  
 // 修改学生信息
-func (s *Commit) ChangeStudentInfo(ctx contractapi.TransactionContextInterface,  hash string, tree string, parent string, author string, committer string, msg string) error {
-        commitInfo, err := s.QueryStudentInfo(ctx, hash)
+func (s *Commit) ChangeCommitInfo(ctx contractapi.TransactionContextInterface,  hash string, tree string, parent string, author string, committer string, msg string) error {
+        commitInfo, err := s.QueryCommitInfo(ctx, hash)
         if err != nil {
                 return err
         }
@@ -155,10 +155,10 @@ func (s *Commit) GetHistory(ctx contractapi.TransactionContextInterface, hash st
 func main() {
         chaincode, err := contractapi.NewChaincode(new(Commit))
         if err != nil {
-                fmt.Printf("Error create fabStudentInfo chaincode: %s", err.Error())
+                fmt.Printf("Error create fabCommitInfo chaincode: %s", err.Error())
                 return
         }
         if err := chaincode.Start(); err != nil {
-                fmt.Printf("Error starting fabStudentInfo chaincode: %s", err.Error())
+                fmt.Printf("Error starting fabCommitInfo chaincode: %s", err.Error())
         }
 }
