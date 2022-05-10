@@ -1,3 +1,8 @@
+{"apiUrl":"https://147.8.92.193:15397/yTzJj4z2ggJ7ONivuRHB-Q","certSha256":"631D2E5A42AC612D0CA6F7CB6C8B4C508525690F61FEA71450F124D49C993F82"}
+
+
+
+
 public boolean installChannel(String channelName) throws IOException, InvalidArgumentException, TransactionException, ProposalException {
 			// TODO Auto-generated method stub
 			  String configPath = this.config.getConfigPath();
