@@ -111,7 +111,7 @@ func (s *Commit) QueryAllCommitInfos(ctx contractapi.TransactionContextInterface
         return results, nil
 }
  
-// 修改学生信息
+// 修改Commit信息
 func (s *Commit) ChangeCommitInfo(ctx contractapi.TransactionContextInterface,  hash string, tree string, parent string, author string, committer string, msg string) error {
         commitInfo, err := s.QueryCommitInfo(ctx, hash)
         if err != nil {
